@@ -186,6 +186,8 @@ def main():
 
     if selectedPage == "Классификация":
         st.header("""Классификация рынка""")
+        st.write("будет скоро")
+        st.markdown("![Alt Text](https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif)")
 
 try:
     if st.session_state.first_load:
