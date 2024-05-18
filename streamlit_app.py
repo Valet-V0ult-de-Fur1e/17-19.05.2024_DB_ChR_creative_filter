@@ -4,12 +4,14 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import altair as alt
 import requests
+import os
+url = 'http://gnu.itatmisis.ru:8000/predict'
 
 def main():
-    selectedPage = st.sidebar.selectbox("Выбрать страницу", ["Статистика", "Классификация"])
+    selectedPage = st.sidebar.selectbox("Выбрать страницу", ["Классификация", "Статистика"])
 
     if selectedPage == "Статистика":
-        st.header("""Пример из приложения""")
+        st.header("""Распределения данных""")
 
         with st.form('1'):
             st.write('Динамика по отдельным категориям')
@@ -92,41 +94,46 @@ def main():
 
     if selectedPage == "Классификация":
         st.header("""Классификация""")
-        # video_url = st.text_input("ссылка на видео из вк, youtube, rutube")
         uploaded_files = st.file_uploader("Choose a files", accept_multiple_files=True)
+        video_url = st.text_input("url видео")
         upload_btn = st.button("обработать")
         if upload_btn:
+            for file in os.listdir('videos'):
+                if file.endswith(".mp4"):
+                    os.remove('videos/'+file)
             for uploaded_file in uploaded_files:
                 bytes_data = uploaded_file.read()
-                url = 'http://90.156.216.132:8000/predict'
                 predict = requests.post(url, files={'file': (uploaded_file.name, bytes_data)}).json()
                 st.write(predict)
                 if predict == None:
                     st.warning('Неправильный формат файла')
                 else:
-                    st.write('Великая магическая машина определила файл ' + f'"{uploaded_file.name}" ' + 'как: ' + predict['result'])
-            
-            # if "youtube" in video_url:
-            #     import yt_dlp
-            #     ydl_opts = {
-            #         'ignoreerrors': True
-            #     }
-            #     with yt_dlp.YoutubeDL(ydl_opts) as url_bin_f:
-            #         error_code = url_bin_f.download(video_url)
-            # if "rutube" in video_url:
-            #     pass
+                    st.write('Великая магическая машина определила файл ' + f'"{uploaded_file.name}" ' + 'как: ' + predict)
+            if video_url:
+                    if "youtube" in video_url:
+                        import yt_dlp
+                        ydl_opts = {
+                            'ignoreerrors': True,
+                            'outtmpl': 'videos/%(title)s.%(ext)s'
+                        }
+                        with yt_dlp.YoutubeDL(ydl_opts) as url_bin_f:
+                            error_code = url_bin_f.download(video_url)
+                    # if "rutube" in video_url:
+                    #     pass
 
-            # if "vk" in video_url:
-            #     pass
-
-            #     urlfile = {'file': (uploaded_file.name, url_bin_f)}
-            #     url = 'http://90.156.216.132:8000/predict'
-            #     predict = requests.get(url, files=urlfile).json()['result']
-            #     if predict == None:
-            #         st.warning('Неправильный формат файла')
-            #     else:
-            #         st.write('великая машина определила файл' + f'"{uploaded_file.name}"' + 'как:' + predict)
-            
+                    # if "vk" in video_url:
+                    #     pass
+                    try:
+                        for file in os.listdir('videos'):
+                            if file.endswith(".mp4"):
+                                predict = requests.post(url, files={'file': (file, open(f'videos/{file}', 'rb'))}).json()['result']
+                                st.write(predict)
+                                if predict == None:
+                                    st.warning('Не удалось скачать видео')
+                                else:
+                                    st.write('великая машина определила файл' + f'{file}' + 'как:' + predict)
+                    except:
+                        st.warning('Не удалось скачать видео')
         st.markdown("![Alt Text](https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif)")
 
 
