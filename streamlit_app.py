@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import altair as alt
-
+import requests
 
 def main():
     selectedPage = st.sidebar.selectbox("Выбрать страницу", ["Статистика", "Классификация"])
@@ -92,18 +92,21 @@ def main():
 
     if selectedPage == "Классификация":
         st.header("""Классификация""")
-        text = st.text_area(
-            "Text to analyze",
-            "",
-            )
         uploaded_files = st.file_uploader("Choose a files", accept_multiple_files=True)
-        for uploaded_file in uploaded_files:
-            bytes_data = uploaded_file.read()
-            st.write("filename:", uploaded_file.name)
-            st.write(bytes_data)
+        
         upload_btn = st.button("обработать")
         if upload_btn:
-            st.write("Предсказанный класс:" + st.session_state.classifier.predict(text))
+            for uploaded_file in uploaded_files:
+                bytes_data = uploaded_file.read()
+                file = {'file': (uploaded_file.name, bytes_data)}
+                url = 'http://90.156.216.132:8000/predict'
+                predict = requests.get(url, files=file).json()['result']
+                if predict == None:
+                    st.warning('Неправильный формат файла')
+                else:
+                    st.write('великая машина определила файл' + f'"{uploaded_file.name}"' + 'как:' + predict)
+                # st.write("filename:", uploaded_file.name)
+                # st.write(bytes_data)
         st.markdown("![Alt Text](https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif)")
 
 
