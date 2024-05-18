@@ -98,8 +98,8 @@ def main():
 
     with tab1:
         st.header("""Классификация""")
-        uploaded_excel_file = st.file_uploader("Загрузите excel файл", accept_multiple_files=False)
-        upload_excel_btn = st.button("обработать excel")
+        uploaded_excel_file = st.file_uploader("Загрузите csv файл", accept_multiple_files=False)
+        upload_excel_btn = st.button("обработать csv")
         if upload_excel_btn and uploaded_excel_file:
             bytes_excel_data = uploaded_excel_file.read()
             predict = requests.post(url_excel, files={'file': (uploaded_excel_file.name, bytes_excel_data)})
@@ -142,6 +142,10 @@ def main():
                     with yt_dlp.YoutubeDL(ydl_opts) as url_bin_f:
                         error_code = url_bin_f.download(video_url)
                 if "rutube" in video_url:
+                    # from rutube import Rutube
+                    # rt = Rutube(video_url)
+                    # st.write(rt.playlist)
+                    # rt.playlist[-1].download()
                     pass
 
                 if "vk" in video_url:
