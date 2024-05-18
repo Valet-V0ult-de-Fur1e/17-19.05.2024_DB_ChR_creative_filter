@@ -133,7 +133,7 @@ def main():
                 # st.write('Великая магическая машина определила файл ' + f'"{uploaded_file.name}" ' + 'как: ' + predict)
                 data_out[uploaded_file.name] = predict
             if video_url:
-                if "youtube" in video_url:
+                if "youtube" in video_url or "vk" in video_url:
                     import yt_dlp
                     ydl_opts = {
                         'ignoreerrors': True,
@@ -145,7 +145,12 @@ def main():
                     pass
 
                 if "vk" in video_url:
-                    pass
+                    import youtube_dl
+
+                    ydl_opts = { 'ignoreerrors': True }
+                    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+                        ydl.download([video_url])
+                    
                 try:
                     for file in os.listdir():
                         if file.endswith(".mp4"):
