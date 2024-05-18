@@ -175,7 +175,7 @@ def main():
                         file_name='output.xlsx',
                         mime='application/vnd.ms-excel'
                     )
-        st.markdown("![Alt Text](https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif)", unsafe_allow_html=False)
+        # st.markdown("![Alt Text](https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif)", unsafe_allow_html=False)
 
 
 try:
