@@ -100,9 +100,9 @@ def main():
         video_url = st.text_input("url видео")
         upload_btn = st.button("обработать")
         if upload_btn:
-            for file in os.listdir('videos'):
+            for file in os.listdir():
                 if file.endswith(".mp4"):
-                    os.remove('videos/'+file)
+                    os.remove(file)
             for uploaded_file in uploaded_files:
                 bytes_data = uploaded_file.read()
                 predict = requests.post(url, files={'file': (uploaded_file.name, bytes_data)}).json()['result']
@@ -114,7 +114,7 @@ def main():
                     import yt_dlp
                     ydl_opts = {
                         'ignoreerrors': True,
-                        'outtmpl': 'videos/%(title)s.%(ext)s'
+                        'outtmpl': '%(title)s.%(ext)s'
                     }
                     with yt_dlp.YoutubeDL(ydl_opts) as url_bin_f:
                         error_code = url_bin_f.download(video_url)
@@ -124,9 +124,9 @@ def main():
                 # if "vk" in video_url:
                 #     pass
                 try:
-                    for file in os.listdir('videos'):
+                    for file in os.listdir():
                         if file.endswith(".mp4"):
-                            predict = requests.post(url, files={'file': (file, open(f'videos/{file}', 'rb'))}).json()['result']
+                            predict = requests.post(url, files={'file': (file, open(file, 'rb'))}).json()['result']
                             st.write(predict)
                             if predict == None:
                                 st.warning('Не удалось скачать видео')
